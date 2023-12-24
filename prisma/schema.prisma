@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String     @id @default(uuid())
+  email        String     @unique
+  name         String
+  lastName     String
+  password     String
+  phone        String
+  role         Role       @relation(fields: [roleId], references: [id])
+  roleId       String
+  susciptionId String
+  succription  Susciption @relation(fields: [susciptionId], references: [id])
+  isActived    Boolean    @default(true)
+  daysSuscription Int    @default(0)
+  trainingDays TrainingDayUser[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Role {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  users     User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Susciption {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  price     Float
+  days      Int
+  users     User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TrainingDay {
+  id String @id @default(uuid())
+  date DateTime
+  hour DateTime
+  day String
+  usersLimit Int @default(0)
+  users TrainingDayUser[]
+}
+
+model TrainingDayUser {
+  id String @id @default(uuid())
+  trainingDay TrainingDay @relation(fields: [trainingDayId], references: [id])
+  trainingDayId String
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
