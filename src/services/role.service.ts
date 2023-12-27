@@ -6,7 +6,11 @@ export class RoleService {
 
   async getAll() {
 
-    const roles = await prisma.role.findMany();
+    const roles = await prisma.role.findMany({
+      include: {
+        users: true,
+      }
+    });
     if (!roles) throw new Error("No roles found");
     return roles;
   }
