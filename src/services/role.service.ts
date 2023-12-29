@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { CustomError } from "../shared/utils/customError";
 
 const prisma = new PrismaClient();
 
@@ -11,7 +12,7 @@ export class RoleService {
         users: true,
       }
     });
-    if (!roles) throw new Error("No roles found");
+    if (!roles) throw new CustomError("No roles found", 404);
     return roles;
   }
 
@@ -19,7 +20,7 @@ export class RoleService {
     const role = await prisma.role.findUnique({
       where: { id },
     });
-    if (!role) throw new Error("No role found");
+    if (!role) throw new CustomError("Role not found", 404);
     return role;
   }
 
