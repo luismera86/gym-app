@@ -1,15 +1,18 @@
 import { PrismaClient } from "@prisma/client";
 import { ErrorHandled } from "../utils/errorHandled";
+import { SubscriptionService } from "./subscription.service";
 
 const prisma = new PrismaClient()
 
 export class UserService {
 
+  private subscriptionServices: SubscriptionService = new SubscriptionService();
+
   async getAll() {
     const users = await prisma.user.findMany({
       include: {
         role: true,
-        trainingDays: true,
+        subscription: true
       }
     });
 
@@ -66,6 +69,27 @@ export class UserService {
       where: { id },
     });
     if (!user) throw ErrorHandled.errorBadRequest("User not deleted");
+
+    return user;
+  }
+
+  async addSubscription(id: string, idSubscription: string) {
+    const subscription = await this.subscriptionServices.getById(idSubscription);
+    if (!subscription) throw ErrorHandled.errorNotFound("Subscription not found");
+
+    const user = await prisma.user.update({
+      where: { id },
+      data: {
+        subscription: {
+          connect: {
+            id: idSubscription
+          
+        }
+        },
+        daysSubscription: subscription.days
+      }
+    });
+    if (!user) throw ErrorHandled.errorBadRequest("Subscription not added");
 
     return user;
   }

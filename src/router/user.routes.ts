@@ -11,6 +11,7 @@ export class UserRoutes {
     router.get("/:id", userController.getOneById);
     router.post("/", userController.createOne);
     router.put("/:id", userController.updateOneById);
+    router.patch("/:id/:idSubscription", userController.addSubscription);
     router.delete("/:id", userController.deleteOneById);
 
     return router;

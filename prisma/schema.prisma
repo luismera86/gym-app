@@ -11,21 +11,22 @@ datasource db {
 }
 
 model User {
-  id              String        @id @default(uuid())
-  email           String        @unique
-  name            String
-  lastName        String
-  password        String
-  phone           String 
-  role            Role          @relation(fields: [roleId], references: [id])
-  roleId          String
-  subscriptionId  String?        
-  subscription    Subscription?  @relation(fields: [subscriptionId], references: [id]) 
-  isActived       Boolean       @default(true)
-  daysSuscription Int           @default(0)
-  trainingDays    TrainingDay[] 
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  id                String            @id @default(uuid())
+  email             String            @unique
+  name              String
+  lastName          String
+  password          String
+  phone             String
+  role              Role              @relation(fields: [roleId], references: [id])
+  roleId            String
+  subscriptionId    String?
+  subscription      Subscription?     @relation(fields: [subscriptionId], references: [id])
+  isActived         Boolean           @default(true)
+  daysSubscription  Int               @default(0)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  TrainingDayHour   TrainingDayHour[]
+  trainingDayHourId String?
 }
 
 model Role {
@@ -47,10 +48,17 @@ model Subscription {
 }
 
 model TrainingDay {
-  id         String   @id @default(uuid())
-  date       DateTime
-  hour       DateTime
-  day        String
-  users      User[]
-  usersLimit Int      @default(0)
+  id               String            @id @default(uuid())
+  date             String
+  day              String
+  trainingDayHours TrainingDayHour[]
+}
+
+model TrainingDayHour {
+  id            String      @id @default(uuid())
+  hour          String
+  trainingDay   TrainingDay @relation(fields: [trainingDayId], references: [id])
+  trainingDayId String
+  users         User[]
+  userLimit     Int         @default(3)
 }
