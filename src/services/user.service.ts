@@ -1,102 +1,73 @@
 import { PrismaClient } from "@prisma/client";
+import { ErrorHandled } from "../utils/errorHandled";
 
 const prisma = new PrismaClient()
 
 export class UserService {
-  
-  getAll() {
 
-    return prisma.user.findMany()
-
-  }
-
-  getById(id: string) {
-
-    return prisma.user.findUnique({
-      where: {
-        id: id
-      }
-    })
-
-  }
-
-  create(data: any) {
-
-    return prisma.user.create({
-      data,
+  async getAll() {
+    const users = await prisma.user.findMany({
       include: {
-        trainingDays: true
-      },
-    
-    })
-  }
-
-  update(id: string, data: any) {
-
-    return prisma.user.update({
-      where: {
-        id: id
-      },
-      data
-    })
-
-  }
-
-  delete(id: string) {
-
-    return prisma.user.delete({
-      where: {
-        id: id
+        role: true,
+        trainingDays: true,
       }
-    })
+    });
 
+    if (!users) throw ErrorHandled.errorNotFound("Users not found");
+
+    return users;
   }
 
-  addTrainingDay(userId: string, trainingDayId: string) {
-    // Agregamos un trainingDay a un usuario
-    return prisma.user.update({
-      where: {
-        id: userId
-      },
-      data: {
-        trainingDays: {
-          connect: {
-            id: trainingDayId
-          }
+  async getOneById(id: string) {
+    const user = await prisma.user.findUnique({
+      where: { id },
+    });
+    if (!user) throw ErrorHandled.errorNotFound("User not found");
+
+    return user;
+  }
+
+  async createOne(data: any) {
+    try {
+      const user = await prisma.user.create({
+        data: {
+          ...data,
+          role: {
+            connect: {
+              id: data.role
+            }
+          },
+          
         }
-      }
-    })
+      });
+
+      return user;
+    } catch (error) {
+      console.error(error);
+      throw ErrorHandled.errorBadRequest("User not created");
+    }
+    ;
+
+
   }
 
-  removeTrainingDay(userId: string, trainingDayId: string) {
-    // Eliminamos un trainingDay a un usuario
-    return prisma.user.update({
-      where: {
-        id: userId
-      },
-      data: {
-        trainingDays: {
-          disconnect: {
-            id: trainingDayId
-          }
-        }
-      }
-    })
+  async updateOneById(id: string, data: any) {
+    const user = await prisma.user.update({
+      where: { id },
+      data,
+    });
+    if (!user) throw ErrorHandled.errorBadRequest("User not updated");
+
+    return user;
   }
 
-  addSubscription(userId: string, subscriptionId: string) {
-    // Agregamos una suscripcion a un usuario
-    return prisma.user.update({
-      where: {
-        id: userId
-      },
-      data: {
-        subscription: {
-          connect: {
-            id: subscriptionId
-          }
-        }
-      }
-    })
+  async deleteOneById(id: string) {
+    const user = await prisma.user.delete({
+      where: { id },
+    });
+    if (!user) throw ErrorHandled.errorBadRequest("User not deleted");
+
+    return user;
   }
+
 }
