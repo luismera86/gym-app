@@ -1,103 +1,72 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { RoleService } from "../services/role.service";
-import { log } from "console";
-
-
 
 export class RoleController {
 
   private roleServices: RoleService = new RoleService();
 
-
-  getAll = async (req: Request, res: Response) => {
+  getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // const roleService: RoleService = new RoleService();
       const roles = await this.roleServices.getAll();
-      console.log(roles);
-
-
       res.status(200).json({
-        ok: true,
-        roles
+        status: "success",
+        payload: roles
       });
-
     } catch (error) {
-      console.error(error);
-      res.status(500).json({
-        ok: false,
-        error: 'Error interno del servidor',
-      });
+      next(error);
     }
   }
 
-  getOneById = async (req: Request, res: Response) => {
+  getOneById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
       const role = await this.roleServices.getOneById(id);
       res.status(200).json({
-        ok: true,
-        role
+        status: "success",
+        payload: role
       });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({
-        ok: false,
-        error: 'Error interno del servidor',
-      });
+      next(error);
     }
   }
 
-  createOne = async (req: Request, res: Response) => {
+  createOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = req.body;
       const role = await this.roleServices.createOne(data);
       res.status(200).json({
-        ok: true,
-        role
+        status: "success",
+        payload: role
       });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({
-        ok: false,
-        error: 'Error interno del servidor',
-      });
+      next(error);
     }
   }
 
-  updateOneById = async (req: Request, res: Response) => {
+  updateOneById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
       const data = req.body;
       const role = await this.roleServices.updateOneById(id, data);
       res.status(200).json({
-        ok: true,
-        role
+        status: "success",
+        payload: role
       });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({
-        ok: false,
-        error: 'Error interno del servidor',
-      });
+      next(error);
     }
   }
 
-  deleteOneById = async (req: Request, res: Response) => {
+  deleteOneById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
       const role = await this.roleServices.deleteOneById(id);
       res.status(200).json({
-        ok: true,
-        role
+        status: "success",
+        payload: role
       });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({
-        ok: false,
-        error: 'Error interno del servidor',
-      });
+      next(error);
     }
   }
-
-
 }
