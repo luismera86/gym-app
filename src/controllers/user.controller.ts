@@ -1,17 +1,18 @@
 import { NextFunction, Request, Response } from "express";
-import { RoleService } from "../services/role.service";
+import { UserService } from "../services/user.service";
 
-export class RoleController {
-
-  private roleServices: RoleService = new RoleService();
+export class UserController {
+  private userService: UserService = new UserService();
 
   getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const roles = await this.roleServices.getAll();
+
+      const users = await this.userService.getAll();
       res.status(200).json({
         status: "success",
-        payload: roles
+        payload: users,
       });
+      
     } catch (error) {
       next(error);
     }
@@ -20,11 +21,10 @@ export class RoleController {
   getOneById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const role = await this.roleServices.getOneById(id);
-      console.log(role);
+      const user = await this.userService.getOneById(id);
       res.status(200).json({
         status: "success",
-        payload: role
+        payload: user,
       });
     } catch (error) {
       next(error);
@@ -33,11 +33,11 @@ export class RoleController {
 
   createOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const data = req.body;
-      const role = await this.roleServices.createOne(data);
-      res.status(200).json({
+      console.log(req.body);
+      const user = await this.userService.createOne(req.body);
+      res.status(201).json({
         status: "success",
-        payload: role
+        payload: user,
       });
     } catch (error) {
       next(error);
@@ -47,12 +47,12 @@ export class RoleController {
   updateOneById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const data = req.body;
-      const role = await this.roleServices.updateOneById(id, data);
+      const user = await this.userService.updateOneById(id, req.body);
       res.status(200).json({
         status: "success",
-        payload: role
+        payload: user,
       });
+      
     } catch (error) {
       next(error);
     }
@@ -61,13 +61,29 @@ export class RoleController {
   deleteOneById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const role = await this.roleServices.deleteOneById(id);
+      const user = await this.userService.deleteOneById(id);
       res.status(200).json({
         status: "success",
-        payload: role
+        payload: user,
       });
+      
     } catch (error) {
       next(error);
     }
   }
+
+  addSubscription = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id, idSubscription } = req.params;
+      const user = await this.userService.addSubscription(id, idSubscription);
+      res.status(200).json({
+        status: "success",
+        payload: user,
+      });
+      
+    } catch (error) {
+      next(error);
+    }
+  }
+
 }

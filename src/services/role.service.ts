@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { CustomError } from "../shared/utils/customError";
+import { ErrorHandled } from "../utils/errorHandled";
 
 const prisma = new PrismaClient();
 
@@ -12,7 +12,7 @@ export class RoleService {
         users: true,
       }
     });
-    if (!roles) throw new CustomError("No roles found", 404);
+    if (!roles) throw ErrorHandled.errorNotFound("Roles not found");
     return roles;
   }
 
@@ -20,7 +20,7 @@ export class RoleService {
     const role = await prisma.role.findUnique({
       where: { id },
     });
-    if (!role) throw new CustomError("Role not found", 404);
+    if (!role) throw ErrorHandled.errorNotFound("Role not found");
     return role;
   }
 
@@ -28,7 +28,7 @@ export class RoleService {
     const role = await prisma.role.create({
       data,
     });
-    if (!role) throw new Error("Role not created");
+    if (!role) throw ErrorHandled.errorBadRequest("Role not created");
     return role;
   }
 
@@ -37,7 +37,7 @@ export class RoleService {
       where: { id },
       data,
     });
-    if (!role) throw new Error("Role not updated");
+    if (!role) throw ErrorHandled.errorBadRequest("Role not updated");
     return role;
   }
 
@@ -45,7 +45,7 @@ export class RoleService {
     const role = await prisma.role.delete({
       where: { id },
     });
-    if (!role) throw new Error("Role not deleted");
+    if (!role) throw ErrorHandled.errorBadRequest("Role not deleted");
     return role;
   }
 

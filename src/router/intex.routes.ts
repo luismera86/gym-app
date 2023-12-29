@@ -1,6 +1,10 @@
-import { NextFunction, Request, Response, Router } from "express";
+import e, { NextFunction, Request, Response, Router } from "express";
 import { RoleRoutes } from "./role.routes";
-import { CustomError } from "../shared/utils/customError";
+import { ErrorHandled } from "../utils/errorHandled";
+import { UserRoutes } from "./user.routes";
+import { SubscriptionRoutes } from "./subscription.routes";
+import { TrainingDayRoutes } from "./trainingDay.routes";
+import { TrainingDayHourRoutes } from "./trainingDayHour.routes";
 
 
 export class Routes {
@@ -8,13 +12,17 @@ export class Routes {
   public static routes() {
     const router = Router();
     router.use("/role", RoleRoutes.routes());
+    router.use("/user", UserRoutes.routes());
+    router.use("/subscription", SubscriptionRoutes.routes());
+    router.use("/trainingDay", TrainingDayRoutes.routes());
+    router.use("/trainingDayHour", TrainingDayHourRoutes.routes());
+
     router.use((err: any, req: Request, res: Response, next: NextFunction) => {
-      if (err instanceof CustomError) {
-        return res.status(err.statusCode).json({ status: 'error', message: err.message });
+      if (err instanceof ErrorHandled) {
+        res.status(err.status).send({ error: err.message });
+      } else {
+        res.status(500).send({ error: err.message });
       }
-    
-      // Si no es un error que conocemos, delegamos al manejador de errores por defecto de Express
-      res.status(500).json({ status: 'error', message: 'An unexpected error occurred' });
     });
 
     return router;
