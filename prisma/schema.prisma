@@ -11,21 +11,21 @@ datasource db {
 }
 
 model User {
-  id           String     @id @default(uuid())
-  email        String     @unique
-  name         String
-  lastName     String
-  password     String
-  phone        String
-  role         Role       @relation(fields: [roleId], references: [id])
-  roleId       String
-  susciptionId String
-  succription  Susciption @relation(fields: [susciptionId], references: [id])
-  isActived    Boolean    @default(true)
-  daysSuscription Int    @default(0)
-  trainingDays TrainingDayUser[]
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  id              String        @id @default(uuid())
+  email           String        @unique
+  name            String
+  lastName        String
+  password        String
+  phone           String
+  role            Role          @relation(fields: [roleId], references: [id])
+  roleId          String
+  subscriptionId  String
+  subscription    Subscription  @relation(fields: [subscriptionId], references: [id])
+  isActived       Boolean       @default(true)
+  daysSuscription Int           @default(0)
+  trainingDays    TrainingDay[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }
 
 model Role {
@@ -36,7 +36,7 @@ model Role {
   updatedAt DateTime @updatedAt
 }
 
-model Susciption {
+model Subscription {
   id        String   @id @default(uuid())
   name      String   @unique
   price     Float
@@ -47,20 +47,10 @@ model Susciption {
 }
 
 model TrainingDay {
-  id String @id @default(uuid())
-  date DateTime
-  hour DateTime
-  day String
-  usersLimit Int @default(0)
-  users TrainingDayUser[]
-}
-
-model TrainingDayUser {
-  id String @id @default(uuid())
-  trainingDay TrainingDay @relation(fields: [trainingDayId], references: [id])
-  trainingDayId String
-  user User @relation(fields: [userId], references: [id])
-  userId String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(uuid())
+  date       DateTime
+  hour       DateTime
+  day        String
+  users      User[]
+  usersLimit Int      @default(0)
 }
