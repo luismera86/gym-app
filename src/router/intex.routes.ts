@@ -16,6 +16,9 @@ export class Routes {
     router.use("/subscription", SubscriptionRoutes.routes());
     router.use("/trainingDay", TrainingDayRoutes.routes());
     router.use("/trainingDayHour", TrainingDayHourRoutes.routes());
+    router.use("*", (req: Request, res: Response) => {
+      res.status(404).send({ error: "Not found" });
+    });
 
     router.use((err: any, req: Request, res: Response, next: NextFunction) => {
       if (err instanceof ErrorHandled) {

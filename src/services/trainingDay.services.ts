@@ -58,4 +58,18 @@ export class TrainingDayService {
     if (!trainingDay) throw ErrorHandled.errorNotFound("Training day not found");
     return trainingDay;
   }
+
+  async addTrainingDayHour(trainingDayId: string, trainingDayHourId: string) {
+    const trainingDay = await prisma.trainingDay.update({
+      where: { id: trainingDayId },
+      data: {
+        trainingDayHours: {
+          connect: { id: trainingDayHourId },
+        },
+      },
+    });
+
+    if (!trainingDay) throw ErrorHandled.errorNotFound("Training day not found");
+    return trainingDay;
+  }
 }

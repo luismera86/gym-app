@@ -33,17 +33,15 @@ export class TrainingDayHourServices {
     }
   }
 
-  generateTrainingDayHours = async (idTrainingDay: string, hour: string) => {
-    const trainingDayHour = await prisma.trainingDayHour.create({
-      data: {
-        trainingDay: {
-          connect: {
-            id: idTrainingDay
-          }
-        },
-        hour
-      }
-    });
+  generateTrainingDayHours = async (idTrainingDay: string) => {
+    const hours = ["08:00", "09:00", "10:00", "11:00", "12:00", "17:00", "18:00", "19:00", "20:00", "21:00"];
+
+    const trainingDayHour = hours.map(async (hour) => {
+      await this.createOne({
+        trainingDayId: idTrainingDay,
+        hour,
+      });
+    } );
 
     if (!trainingDayHour) throw ErrorHandled.errorNotFound("TrainingDayHour not found");
 

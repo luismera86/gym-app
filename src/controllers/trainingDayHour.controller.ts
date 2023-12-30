@@ -1,8 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { TrainingDayHourServices } from "../services/trainingDayHour.services";
+import { TrainingDayService } from "../services/trainingDay.services";
 
 export class TrainingDayHourController {
   private trainingDayHourService: TrainingDayHourServices = new TrainingDayHourServices();
+  private trainingDayService: TrainingDayService = new TrainingDayService();
 
   getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -14,7 +16,7 @@ export class TrainingDayHourController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   getOneById = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -27,7 +29,7 @@ export class TrainingDayHourController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   createOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -39,7 +41,7 @@ export class TrainingDayHourController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   updateOneById = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -52,7 +54,7 @@ export class TrainingDayHourController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   deleteOneById = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -65,26 +67,5 @@ export class TrainingDayHourController {
     } catch (error) {
       next(error);
     }
-  }
-
-  generateTrainingDayHours = async (req: Request, res: Response, next: NextFunction) => {
-    const { idTrainingDay } = req.params;
-    try { 
-      const hours = ["08:00", "09:00", "10:00", "11:00", "12:00", "17:00", "18:00", "19:00", "20:00", "21:00"];
-
-      const trainingDayHours = hours.map(async (hour) => { 
-        const tdh = await this.trainingDayHourService.generateTrainingDayHours(idTrainingDay, hour);
-        return tdh;
-      });
-
-      res.status(200).json({
-        status: "success",
-        payload: trainingDayHours,
-      });
-
-    } catch (error) {
-      next(error);
-    }
-  }
-
+  };
 }

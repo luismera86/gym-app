@@ -10,7 +10,6 @@ export class TrainingDayHourRoutes {
     router.get("/", trainingDayHour.getAll);
     router.get("/:id", trainingDayHour.getOneById);
     router.post("/", trainingDayHour.createOne);
-    router.post("/:idTrainingDay", trainingDayHour.generateTrainingDayHours);
     router.put("/:id", trainingDayHour.updateOneById);
     router.delete("/:id", trainingDayHour.deleteOneById);
 
