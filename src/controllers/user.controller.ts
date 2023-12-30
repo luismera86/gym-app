@@ -1,22 +1,22 @@
 import { NextFunction, Request, Response } from "express";
 import { UserService } from "../services/user.service";
+import { User } from "@prisma/client";
+import { hashedPassword } from "../utils/haspassword";
 
 export class UserController {
   private userService: UserService = new UserService();
 
   getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
-
       const users = await this.userService.getAll();
       res.status(200).json({
         status: "success",
         payload: users,
       });
-      
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   getOneById = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -29,12 +29,18 @@ export class UserController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   createOne = async (req: Request, res: Response, next: NextFunction) => {
+    const userBody = req.body as User;
+
     try {
-      console.log(req.body);
-      const user = await this.userService.createOne(req.body);
+      const newUser = {
+        ...userBody,
+        password: hashedPassword(userBody.password),
+      };
+
+      const user = await this.userService.createOne(newUser);
       res.status(201).json({
         status: "success",
         payload: user,
@@ -42,7 +48,7 @@ export class UserController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   updateOneById = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -52,11 +58,10 @@ export class UserController {
         status: "success",
         payload: user,
       });
-      
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   deleteOneById = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -66,11 +71,10 @@ export class UserController {
         status: "success",
         payload: user,
       });
-      
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   addSubscription = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -80,10 +84,8 @@ export class UserController {
         status: "success",
         payload: user,
       });
-      
     } catch (error) {
       next(error);
     }
-  }
-
+  };
 }

@@ -30,6 +30,15 @@ export class UserService {
     return user;
   }
 
+  async getOneByEmail(email: string) {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+    if (!user) throw ErrorHandled.errorNotFound("User not found");
+
+    return user;
+  }
+
   async createOne(data: any) {
     try {
       const user = await prisma.user.create({

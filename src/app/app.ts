@@ -1,5 +1,7 @@
 import express from "express";
-import { Routes } from "../router/intex.routes";
+import { Routes } from "../router/index.routes";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
 
 
@@ -17,6 +19,8 @@ export class App {
   private middlewares(): void {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(cors());
+    this.app.use(cookieParser());
   }
 
   private routes(): void { 
