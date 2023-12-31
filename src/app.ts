@@ -1,7 +1,9 @@
 import express from "express";
-import { Routes } from "../router/index.routes";
+
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { Routes } from "./router/index.routes";
+import { envsConfig } from "./config/envs.config";
 
 
 
@@ -35,3 +37,6 @@ export class App {
 
 
 }
+
+
+new App(+envsConfig.PORT);
