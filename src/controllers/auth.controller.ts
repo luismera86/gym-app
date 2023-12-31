@@ -18,12 +18,10 @@ export class AuthController {
 
       if (!checkPassword) throw ErrorHandled.errorBadRequest("Password incorrect");
 
-      res.cookie("user", token, { maxAge: 3600000, httpOnly: true, secure: true, sameSite: "strict" });
+      res.cookie("user", token, { maxAge: 10000, httpOnly: true, secure: true, sameSite: "strict" });
 
       const cookies = req.cookies.user;
-
-      const decoded = verifyToken(cookies);
-      console.log(decoded);
+      console.log(cookies);
 
       res.status(200).json({
         status: "success",

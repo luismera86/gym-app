@@ -2,18 +2,23 @@ import { PrismaClient } from "@prisma/client";
 import { ErrorHandled } from "../utils/errorHandled";
 import { SubscriptionService } from "./subscription.service";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 export class UserService {
-
   private subscriptionServices: SubscriptionService = new SubscriptionService();
 
   async getAll() {
     const users = await prisma.user.findMany({
       include: {
         role: true,
-        subscription: true
-      }
+        subscription: true,
+        TrainingDayHour: {
+          include: {
+            trainingDay: true,
+            users: true,
+          },
+        },
+      },
     });
 
     if (!users) throw ErrorHandled.errorNotFound("Users not found");
@@ -46,11 +51,10 @@ export class UserService {
           ...data,
           role: {
             connect: {
-              id: data.role
-            }
+              id: data.role,
+            },
           },
-          
-        }
+        },
       });
 
       return user;
@@ -58,9 +62,6 @@ export class UserService {
       console.error(error);
       throw ErrorHandled.errorBadRequest("User not created");
     }
-    ;
-
-
   }
 
   async updateOneById(id: string, data: any) {
@@ -91,16 +92,38 @@ export class UserService {
       data: {
         subscription: {
           connect: {
-            id: idSubscription
-          
-        }
+            id: idSubscription,
+          },
         },
-        daysSubscription: subscription.days
-      }
+        daysSubscription: subscription.days,
+      },
     });
     if (!user) throw ErrorHandled.errorBadRequest("Subscription not added");
 
     return user;
   }
 
+  async addTrainingDayHours(idTDH: string, idUser: string) {
+    const userData = await this.getOneById(idUser);
+    if (!userData) throw ErrorHandled.errorNotFound("User not found");
+    const tdh = await prisma.trainingDayHour.findUnique({
+      where: { id: idTDH },
+    });
+
+    if (!tdh) throw ErrorHandled.errorNotFound("Training Day Hours not found");
+    if (tdh.userLimit === 0) throw ErrorHandled.errorBadRequest("Training Day Hours not available");
+    const user = await prisma.user.update({
+      where: { id: idUser },
+      data: {
+        TrainingDayHour: {
+          connect: {
+            id: idTDH,
+          },
+        },
+      },
+    });
+    if (!user) throw ErrorHandled.errorBadRequest("Training Day Hours not added");
+    
+    return user;
+  }
 }

@@ -6,7 +6,13 @@ const prisma = new PrismaClient();
 export class TrainingDayHourServices {
 
   getAll = async () => {
-    const trainingDayHour = await prisma.trainingDayHour.findMany();
+    const trainingDayHour = await prisma.trainingDayHour.findMany({
+      include: {
+        trainingDay: true,
+        users: true,
+      },
+    
+    });
     if (!trainingDayHour) throw ErrorHandled.errorNotFound("TrainingDayHour not found");
     return trainingDayHour;
   }
@@ -14,6 +20,10 @@ export class TrainingDayHourServices {
   getOneById = async (id: string) => {
     const trainingDayHour = await prisma.trainingDayHour.findUnique({
       where: { id },
+      include: {
+        trainingDay: true,
+        users: true,
+      },
     });
     if (!trainingDayHour) throw ErrorHandled.errorNotFound("TrainingDayHour not found");
 
