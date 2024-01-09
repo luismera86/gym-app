@@ -3,6 +3,7 @@ import { UserService } from "../services/user.service";
 import { comparePassword } from "../utils/haspassword";
 import { ErrorHandled } from "../utils/errorHandled";
 import { generateToken, verifyToken } from "../utils/jwt";
+import { User } from "@prisma/client";
 
 
 export class AuthController {
@@ -14,7 +15,7 @@ export class AuthController {
 
       const checkPassword = comparePassword(password, user.password);
 
-      const token = generateToken({ id: user.id, email: user.email });
+      const token = generateToken({ id: user.id, email: user.email, daysSubscription: user.daysSubscription, name: user.name, roleId: user.roleId } as User);
 
       if (!checkPassword) throw ErrorHandled.errorBadRequest("Password incorrect");
 
